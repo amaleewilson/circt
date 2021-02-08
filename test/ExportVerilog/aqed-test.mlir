@@ -52,14 +52,6 @@ rtl.module @aqed(%clk: i1, %clk_en: i1, %reset: i1,
     %not_orig_issued = rtl.xor %orig_issued, %allone : i1
     %not_flush = rtl.xor %flush, %allone : i1
 
-        // sv.initial {
-    //     %thing = sv.textual_value "THING" : i42
-    //     // CHECK-NEXT: wire42 = THING;
-    //     sv.bpassign %wire42, %thing : i42
-    //     // CHECK-NEXT: wire42 <= THING;
-    //     sv.passign %wire42, %thing : i42
-    // }// CHECK-NEXT:   {{end // initial$}}
-
     %big_and_issue_orig = rtl.and %not_reset, %exec_dup, %wen_in, %not_orig_issued, %not_flush : i1
     sv.connect %issue_orig_wire,  %big_and_issue_orig : i1
 
