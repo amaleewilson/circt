@@ -851,15 +851,15 @@ struct ProcOpConversion : public ConvertToLLVMPattern {
     // Collect used llvm types.
     auto voidTy = getVoidType();
     auto i8PtrTy = getVoidPtrType();
-    auto i1Ty = IntegerType::get(rewriter.getContext(), 1);
-    auto i32Ty = IntegerType::get(rewriter.getContext(), 32);
-    auto senseTableTy = LLVM::LLVMPointerType::get(
-        LLVM::LLVMArrayType::get(i1Ty, procOp.getNumArguments()));
-    auto stateTy = LLVM::LLVMStructType::getLiteral(
-        rewriter.getContext(),
-        {/* current instance  */ i32Ty, /* resume index */ i32Ty,
-         /* sense flags */ senseTableTy, /* persistent types */
-         getProcPersistenceTy(&getDialect(), typeConverter, procOp)});
+    auto i1Ty = LLVM::LLVMType::getInt1Ty(&typeConverter.getContext());
+    auto i32Ty = LLVM::LLVMType::getInt32Ty(&typeConverter.getContext());
+    auto senseTableTy =
+        LLVM::LLVMType::getArrayTy(i1Ty, procOp.getNumArguments())
+            .getPointerTo();
+    auto stateTy = LLVM::LLVMType::getStructTy(
+        /* current instance  */ i32Ty, /* resume index */ i32Ty,
+        /* sense flags */ senseTableTy, /* persistent types */
+        getProcPersistenceTy(&getDialect(), typeConverter, procOp));
     auto sigTy = getLLVMSigType(&getDialect());
 
     // Keep track of the original first operation of the process, to know where
@@ -1367,10 +1367,10 @@ struct InstOpConversion : public ConvertToLLVMPattern {
       auto sensesPtrTy = LLVM::LLVMPointerType::get(
           LLVM::LLVMArrayType::get(i1Ty, proc.getNumArguments()));
       auto procStatePtrTy =
-          LLVM::LLVMPointerType::get(LLVM::LLVMStructType::getLiteral(
-              rewriter.getContext(),
-              {i32Ty, i32Ty, sensesPtrTy,
-               getProcPersistenceTy(&getDialect(), typeConverter, proc)}));
+          LLVM::LLVMType::getStructTy(
+              i32Ty, i32Ty, sensesPtrTy,
+              getProcPersistenceTy(&getDialect(), typeConverter, proc))
+              .getPointerTo();
 
       auto zeroC = initBuilder.create<LLVM::ConstantOp>(
           op->getLoc(), i32Ty, rewriter.getI32IntegerAttr(0));
