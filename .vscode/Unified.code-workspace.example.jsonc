@@ -1,7 +1,8 @@
 {
   /**
   This file defines an example VSCode workspace for working with both Circt and MLIR.
-  We are not committed to keeping it up-to-date, but we believe it is valueable as a starting point for folks interested in using VSCode as their IDE.
+  We are not committed to keeping it up-to-date, but we believe it is valueable as a 
+  starting point for folks interested in using VSCode as their IDE.
   */
   "folders": [
     {

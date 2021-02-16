@@ -14,6 +14,7 @@ set(CIRCT_TEST_DEPENDS
   circt-translate
   handshake-runner
   firtool
+  auto-aqed
   mlir-opt
   mlir-cpu-runner
   )

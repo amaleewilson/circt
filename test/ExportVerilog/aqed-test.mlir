@@ -115,21 +115,9 @@ rtl.module @aqed(%clk: i1, %clk_en: i1, %reset: i1,
         }
     }
 
+    %tern_approx = rtl.mux %issue_dup, %orig_in, %data_in : i16
     %the_data_output = sv.reg : !rtl.inout<i16>
-//    assign data_out = issue_orig ? data_in : (issue_dup ? orig_in: data_in);
-    // sv.if %issue_dup {
-    //     sv.bpassign %the_data_output, %orig_in : i16
-    // } 
-    // sv.if %not_issue_dup {
-    //     sv.bpassign %the_data_output, %data_in : i16
-    // }
-
-    sv.if %issue_dup {
-        sv.connect %the_data_output, %orig_in : i16
-    } 
-    sv.if %not_issue_dup {
-        sv.connect %the_data_output, %data_in : i16
-    }
+    sv.connect %the_data_output, %tern_approx : i16
 
     %the_data_output_read = sv.read_inout %the_data_output : !rtl.inout<i16>
 
